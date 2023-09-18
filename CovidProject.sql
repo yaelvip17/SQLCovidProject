@@ -31,7 +31,8 @@ order by location, population
 -- looking at countries with highest infection rate compared to the population
 -- shows the precentage of population that got infected
 
-select location, population, max(total_cases) highetsInfectionCount, max(total_cases/population)*100 populationPercentageInfected
+select location, population, max(total_cases) highetsInfectionCount,
+max(total_cases/population)*100 populationPercentageInfected
 from CovidDeaths
 where continent is not null
 group by population, location
@@ -40,7 +41,8 @@ order by populationPercentageInfected desc
 -- create view for later vizualization
 
 create view popInfected as
-select location, population, max(total_cases) highetsInfectionCount, max(total_cases/population)*100 populationPercentageInfected
+select location, population, max(total_cases) highetsInfectionCount,
+max(total_cases/population)*100 populationPercentageInfected
 from CovidDeaths
 where continent is not null
 group by population, location
@@ -65,7 +67,8 @@ group by location
 -- looking at global numbers
 -- shows the total cases, deaths and the death percentage in the world
 
-select sum(total_cases) totalCases, sum(cast(total_deaths as int)) totalDeaths, sum(cast(total_deaths as int))/sum(total_cases)*100 deathPercentage
+select sum(total_cases) totalCases, sum(cast(total_deaths as int)) totalDeaths,
+sum(cast(total_deaths as int))/sum(total_cases)*100 deathPercentage
 from CovidDeaths
 where continent is not null
 order by 1, 2
@@ -73,7 +76,8 @@ order by 1, 2
 -- create view for later vizualization
 
 create view globalNumbers as
-select sum(total_cases) totalCases, sum(cast(total_deaths as int)) totalDeaths, sum(cast(total_deaths as int))/sum(total_cases)*100 deathPercentage
+select sum(total_cases) totalCases, sum(cast(total_deaths as int)) totalDeaths,
+sum(cast(total_deaths as int))/sum(total_cases)*100 deathPercentage
 from CovidDeaths
 where continent is not null
 
@@ -87,7 +91,8 @@ on coD.location=coV.location and coD.date=coV.date
 -- looking at total population vs vaccinations
 
 select coD.continent, coD.location, coD.date, coD.population, coV.new_vaccinations,
-sum(convert(int, coV.new_vaccinations)) over (partition by coD.location order by coD.location, coD.date) rollingVaccinations
+sum(convert(int, coV.new_vaccinations)) over
+(partition by coD.location order by coD.location, coD.date) rollingVaccinations
 from CovidDeaths coD
 join CovidVaccinations coV
 on coD.location=coV.location and coD.date=coV.date
@@ -101,7 +106,8 @@ order by 2,3
 --(continent, location, date, population, new_vaccinations, rollingVaccinations)
 --as
 --(select coD.continent, coD.location, coD.date, coD.population, coV.new_vaccinations,
---sum(convert(int, coV.new_vaccinations)) over (partition by coD.location order by coD.location, coD.date) rollingVaccinations
+--sum(convert(int, coV.new_vaccinations)) over
+--(partition by coD.location order by coD.location, coD.date) rollingVaccinations
 --from CovidDeaths coD
 --join CovidVaccinations coV
 --on coD.location=coV.location and coD.date=coV.date
@@ -124,7 +130,8 @@ population numeric,
  )
  insert into #popVSvac
 select coD.continent, coD.location, coD.date, coD.population, coV.new_vaccinations,
-sum(convert(int, coV.new_vaccinations)) over (partition by coD.location order by coD.location, coD.date) rollingVaccinations
+sum(convert(int, coV.new_vaccinations)) over
+(partition by coD.location order by coD.location, coD.date) rollingVaccinations
 from CovidDeaths coD
 join CovidVaccinations coV
 on coD.location=coV.location and coD.date=coV.date
@@ -137,7 +144,8 @@ from #popVSvac
 
 create view popVSvac as
 select coD.continent, coD.location, coD.date, coD.population, coV.new_vaccinations,
-sum(convert(int, coV.new_vaccinations)) over (partition by coD.location order by coD.location, coD.date) rollingVaccinations
+sum(convert(int, coV.new_vaccinations)) over
+(partition by coD.location order by coD.location, coD.date) rollingVaccinations
 from CovidDeaths coD
 join CovidVaccinations coV
 on coD.location=coV.location and coD.date=coV.date
